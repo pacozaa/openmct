@@ -39,9 +39,6 @@ define(
                 mockUrlService,
                 mockDomainObject,
                 mockNextObject,
-                mockParentContext,
-                mockParent,
-                mockGrandparent,
                 controller;
 
             function mockPromise(value) {
@@ -55,7 +52,7 @@ define(
             beforeEach(function () {
                 mockScope = jasmine.createSpyObj(
                     "$scope",
-                    [ "$on", "$watch", "treeSlide", "backArrow" ]
+                    [ "$on", "$watch" ]
                 );
                 mockRoute = { current: { params: {} } };
                 mockLocation = jasmine.createSpyObj(
@@ -91,6 +88,7 @@ define(
                     "nextObject",
                     [ "getId", "getCapability", "getModel", "useCapability" ]
                 );
+<<<<<<< HEAD
 
 
                 mockParentContext = jasmine.createSpyObj('context', ['getParent']);
@@ -102,6 +100,8 @@ define(
                     "domainObject",
                     [ "getId", "getCapability", "getModel", "useCapability" ]
                 );
+=======
+>>>>>>> mobile
 
                 mockObjectService.getObjects.andReturn(mockPromise({
                     ROOT: mockRootObject
@@ -160,18 +160,6 @@ define(
                 expect(mockScope.navigatedObject).toEqual(mockDomainObject);
             });
 
-            // Mocks the tree slide call that
-            // lets the html code know if the
-            // tree menu is open.
-            it("calls the treeSlide function", function () {
-                expect(mockScope.$on).toHaveBeenCalledWith(
-                    "select-obj",
-                    jasmine.any(Function)
-                );
-
-                mockScope.$on.calls[1].args[1]();
-            });
-
             it("releases its navigation listener when its scope is destroyed", function () {
                 expect(mockScope.$on).toHaveBeenCalledWith(
                     "$destroy",
@@ -179,6 +167,7 @@ define(
                 );
 
                 mockScope.$on.calls[0].args[1]();
+
                 // Should remove the listener it added earlier
                 expect(mockNavigationService.removeListener).toHaveBeenCalledWith(
                     mockNavigationService.addListener.mostRecentCall.args[0]

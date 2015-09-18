@@ -1,0 +1,19 @@
+{
+    "extensions": {
+        "controllers": [
+            {
+                "key": "BrowseTreeController",
+                "implementation": "MobileBrowseTreeController.js",
+                "priority": "preferred",
+                "depends": [ "$scope", "navigationService", "agentService" ]
+            }
+        ],
+        "services": [
+            {
+                "key": "agentService",
+                "implementation": "AgentService.js",
+                "depends": [ "$window" ]
+            }
+        ]
+    }
+}

@@ -65,6 +65,7 @@ define(
                 // path to new, addressed, path based on
                 // domainObject
                 $location.path(urlService.urlForLocation("browse", domainObject));
+
             }
 
             // Callback for updating the in-scope reference to the object
@@ -142,12 +143,6 @@ define(
                 selectedObject: navigationService.getNavigation()
             };
 
-            // SlideMenu boolean used to hide and show
-            // tree menu
-            $scope.treeSlide = function () {
-                $scope.treeClass = !$scope.treeClass;
-            };
-
             // Listen for changes in navigation state.
             navigationService.addListener(setNavigation);
 
@@ -159,11 +154,6 @@ define(
                 navigationService.removeListener(setNavigation);
             });
 
-            // If the user has selected an object (and is portrait
-            // on a phone), then hide the tree menu
-            $scope.$on("select-obj", function () {
-                $scope.treeSlide();
-            });
         }
 
         return BrowseController;

@@ -47,12 +47,13 @@ define(
                 navigatedObject = this.navigationService.getNavigation(),
                 actionMetadata = action.getMetadata ? action.getMetadata() : {};
 
-            if (navigatedObject.hasCapability('editor')) {
-                if (!selectedObject.hasCapability('editor')){
-                    //Target is in the context menu
-                    return this.nonEditBlacklist.indexOf(actionMetadata.key) === -1;
-                } else {
+            if (navigatedObject.getCapability("status").get("editing")) {
+                if (selectedObject.hasCapability("editor") && selectedObject.getCapability("editor").inEditContext()){
+                    //Target is within the editing context
                     return this.editBlacklist.indexOf(actionMetadata.key) === -1;
+                } else {
+                    //Target is not within the editing context
+                    return this.nonEditBlacklist.indexOf(actionMetadata.key) === -1;
                 }
             } else {
                 return true;

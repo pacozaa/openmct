@@ -66,7 +66,8 @@ define(
         CancelAction.appliesTo = function (context) {
             var domainObject = (context || {}).domainObject;
             return domainObject !== undefined &&
-                domainObject.getCapability("status").get("editing");
+                domainObject.hasCapability('editor') &&
+                domainObject.getCapability('editor').inEditContext();
         };
 
         return CancelAction;

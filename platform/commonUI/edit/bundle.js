@@ -42,7 +42,7 @@ define([
     "./src/representers/EditRepresenter",
     "./src/representers/EditToolbarRepresenter",
     "./src/capabilities/EditorCapability",
-    "./src/capabilities/TransactionDecorator",
+    "./src/capabilities/TransactionCapabilityDecorator",
     "./src/services/TransactionService",
     "./src/services/DirtyModelCache",
     "text!./res/templates/library.html",
@@ -72,7 +72,7 @@ define([
     EditRepresenter,
     EditToolbarRepresenter,
     EditorCapability,
-    TransactionDecorator,
+    TransactionCapabilityDecorator,
     TransactionService,
     DirtyModelCache,
     libraryTemplate,
@@ -272,7 +272,7 @@ define([
                 {
                     "type": "decorator",
                     "provides": "capabilityService",
-                    "implementation": TransactionDecorator,
+                    "implementation": TransactionCapabilityDecorator,
                     "depends": [
                         "$q",
                         "transactionService",

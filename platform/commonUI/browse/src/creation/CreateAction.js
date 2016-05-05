@@ -89,10 +89,9 @@ define(
                 newObject;
 
             newModel.type = this.type.getKey();
+            newModel.location = parentObject.getId();
             newObject = parentObject.useCapability('instantiation', newModel);
-            newObject.useCapability('mutation', function(model){
-                model.location = parentObject.getId();
-            });
+
             editorCapability = newObject.getCapability("editor");
 
             if (countEditableViews(newObject) > 0 && newObject.hasCapability('composition')) {

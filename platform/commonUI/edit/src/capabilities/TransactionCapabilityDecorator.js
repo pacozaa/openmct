@@ -26,7 +26,7 @@ define(
     function (TransactionalPersistenceCapability) {
         'use strict';
 
-        function TransactionDecorator(
+        function TransactionCapabilityDecorator(
             $q,
             transactionService,
             dirtyModelCache,
@@ -42,7 +42,7 @@ define(
          * Decorate PersistenceCapability to ignore persistence calls when a
          * transaction is in progress.
          */
-        TransactionDecorator.prototype.getCapabilities = function (model) {
+        TransactionCapabilityDecorator.prototype.getCapabilities = function (model) {
             var self = this,
                 capabilities = this.capabilityService.getCapabilities(model),
                 persistenceCapability = capabilities.persistence;
@@ -63,6 +63,6 @@ define(
             return capabilities;
         };
 
-        return TransactionDecorator;
+        return TransactionCapabilityDecorator;
     }
 );

@@ -33,13 +33,14 @@ define(
          * @constructor
          * @implements {Policy.<Action, ActionContext>}
          */
-        function EditContextualActionPolicy(navigationService) {
+        function EditContextualActionPolicy(navigationService, editModeBlacklist, nonEditContextBlacklist) {
             this.navigationService = navigationService;
+
             //The list of objects disallowed on target object when in edit mode
-            this.editBlacklist = ["copy", "follow", "window"];
+            this.editModeBlacklist = editModeBlacklist;
             //The list of objects disallowed on target object that is not in
             // edit mode (ie. the context menu in the tree on the LHS).
-            this.nonEditBlacklist = ["copy", "follow", "properties", "move", "link", "remove"];
+            this.nonEditContextBlacklist = nonEditContextBlacklist;
         }
 
         EditContextualActionPolicy.prototype.allow = function (action, context) {
@@ -50,10 +51,10 @@ define(
             if (navigatedObject.getCapability("status").get("editing")) {
                 if (selectedObject.hasCapability("editor") && selectedObject.getCapability("editor").inEditContext()){
                     //Target is within the editing context
-                    return this.editBlacklist.indexOf(actionMetadata.key) === -1;
+                    return this.editModeBlacklist.indexOf(actionMetadata.key) === -1;
                 } else {
                     //Target is not within the editing context
-                    return this.nonEditBlacklist.indexOf(actionMetadata.key) === -1;
+                    return this.nonEditContextBlacklist.indexOf(actionMetadata.key) === -1;
                 }
             } else {
                 return true;

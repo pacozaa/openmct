@@ -212,7 +212,7 @@ define([
                 {
                     "category": "action",
                     "implementation": EditContextualActionPolicy,
-                    "depends": ["navigationService"]
+                    "depends": ["navigationService", "editModeBlacklist", "nonEditContextBlacklist"]
                 },
                 {
                     "category": "action",
@@ -307,6 +307,16 @@ define([
                 },
                 {
                     "implementation": EditToolbarRepresenter
+                }
+            ],
+            "constants": [
+                {
+                    "key":"editModeBlacklist",
+                    "value": ["copy", "follow", "window", "link", "locate"]
+                },
+                {
+                    "key": "nonEditContextBlacklist",
+                    "value": ["copy", "follow", "properties", "move", "link", "remove", "locate"]
                 }
             ],
             "capabilities": [

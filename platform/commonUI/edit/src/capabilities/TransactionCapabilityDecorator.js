@@ -29,12 +29,10 @@ define(
         function TransactionCapabilityDecorator(
             $q,
             transactionService,
-            dirtyModelCache,
             capabilityService
         ) {
             this.capabilityService = capabilityService;
             this.transactionService = transactionService;
-            this.dirtyModelCache = dirtyModelCache;
             this.$q = $q;
         }
 
@@ -55,7 +53,6 @@ define(
                 return new TransactionalPersistenceCapability(
                     self.$q,
                     self.transactionService,
-                    self.dirtyModelCache,
                     original,
                     domainObject
                 );

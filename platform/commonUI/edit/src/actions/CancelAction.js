@@ -48,10 +48,19 @@ define(
 
             function returnToBrowse () {
                 var parent;
-                domainObject.getCapability("location").getOriginal().then(function (original) {
-                    parent = original.getCapability("context").getParent();
-                    parent.getCapability("action").perform("navigate");
-                });
+
+                //If the object existed already, navigate to refresh view
+                // with previous object state.
+                if (domainObject.getModel().persisted) {
+                    domainObject.getCapability("action").perform("navigate");
+                } else {
+                    //If the object was new, and user has cancelled, then
+                    //navigate back to parent because nothing to show.
+                    domainObject.getCapability("location").getOriginal().then(function (original) {
+                        parent = original.getCapability("context").getParent();
+                        parent.getCapability("action").perform("navigate");
+                    });
+                }
             }
             return this.domainObject.getCapability("editor").cancel()
                 .then(returnToBrowse);

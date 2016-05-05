@@ -32,21 +32,32 @@ define(
          * @param $q
          * @constructor
          */
-        function TransactionService($q, dirtyModelCache) {
+        function TransactionService($q, $log) {
             this.$q = $q;
+            this.$log = $log;
             this.transaction = false;
-            this.committing = false;
-            this.cache = dirtyModelCache;
+
+            this.onCommits = [];
+            this.onCancels = [];
         }
 
         TransactionService.prototype.startTransaction = function () {
             if (this.transaction)
-                console.error("Transaction already in progress")
+                this.$log.error("Transaction already in progress")
             this.transaction = true;
         };
 
         TransactionService.prototype.isActive = function () {
-            return this.transaction && !this.committing;
+            return this.transaction;
+        };
+
+        TransactionService.prototype.addToTransaction = function (onCommit, onCancel) {
+            if (this.transaction) {
+                this.onCommits.push(onCommit);
+                if (onCancel) {
+                    this.onCancels.push(onCancel);
+                }
+            }
         };
 
         /**
@@ -56,29 +67,24 @@ define(
          * @returns {*}
          */
         TransactionService.prototype.commit = function () {
-            var self = this;
-                cache = this.cache.get();
+            var self = this,
+                promises = [],
+                onCommit;
 
-            this.committing = true;
-
-            function keyToObject(key) {
-                return cache[key];
+            while (this.onCommits.length > 0) { // ...using a while in case some onCommit adds to transaction
+                onCommit = this.onCommits.pop();
+                try { // ...also don't want to fail mid-loop...
+                    promises.push(onCommit());
+                } catch (e) {
+                    this.$log.error("Error committing transaction.");
+                }
             }
+            return this.$q.all(promises).then( function() {
+                self.transaction = false;
 
-            function objectToPromise(object) {
-                return object.getCapability('persistence').persist();
-            }
-
-            return this.$q.all(
-                Object.keys(cache)
-                    .map(keyToObject)
-                    .map(objectToPromise))
-                .then(function () {
-                    self.transaction = false;
-                    self.committing = false;
-                }).catch(function() {
-                    return self.committing = false;
-                });
+                self.onCommits = [];
+                self.onCancels = [];
+            });
         };
 
         /**
@@ -91,23 +97,23 @@ define(
          */
         TransactionService.prototype.cancel = function () {
             var self = this,
-                cache = this.cache.get();
+                results = [],
+                onCancel;
 
-            function keyToObject(key) {
-                return cache[key];
+            while (this.onCancels.length > 0) {
+                onCancel = this.onCancels.pop();
+                try {
+                    results.push(onCancel());
+                } catch (error) {
+                    this.$log.error("Error committing transaction.");
+                }
             }
+            return this.$q.all(results).then(function () {
+                self.transaction = false;
 
-            function objectToPromise(object) {
-                return self.$q.when(object.getModel().persisted && object.getCapability('persistence').refresh());
-            }
-
-            return this.$q.all(Object.keys(cache)
-                .map(keyToObject)
-                .map(objectToPromise))
-                .then(function () {
-                    self.transaction = false;
-                    self.committing = false;
-                });
+                self.onCommits = [];
+                self.onCancels = [];
+            });
         };
 
         return TransactionService;

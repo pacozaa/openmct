@@ -28,11 +28,9 @@ define(
 
         function EditorCapability(
             transactionService,
-            dirtyModelCache,
             domainObject
         ) {
             this.transactionService = transactionService;
-            this.dirtyModelCache = dirtyModelCache;
             this.domainObject = domainObject;
         }
 
@@ -73,7 +71,7 @@ define(
         };
 
         EditorCapability.prototype.dirty = function () {
-            return this.dirtyModelCache.isDirty(this.domainObject);
+            return (this.domainObject.getModel().modified || 0) > (this.domainObject.getModel().persisted || 0);
         };
 
         return EditorCapability;

@@ -29,41 +29,28 @@ define(
         function TransactionalPersistenceCapability(
             $q,
             transactionService,
-            dirtyModelCache,
             persistenceCapability,
             domainObject
         ) {
             this.transactionService = transactionService;
-            this.dirtyModelCache = dirtyModelCache;
-            this.persistenceCapability = Object.create(persistenceCapability);
+            this.persistenceCapability = persistenceCapability;
             this.domainObject = domainObject;
             this.$q = $q;
         }
 
         TransactionalPersistenceCapability.prototype.persist = function () {
-            var domainObject = this.domainObject,
-                dirtyModelCache = this.dirtyModelCache;
             if (this.transactionService.isActive()) {
-                dirtyModelCache.markDirty(domainObject);
+                this.transactionService.addToTransaction(this.persistenceCapability.persist.bind(this.persistenceCapability), this.persistenceCapability.refresh.bind(this.persistenceCapability));
                 //Using $q here because need to return something
                 // from which 'catch' can be chained
                 return this.$q.when(true);
             } else {
-                return this.persistenceCapability.persist().then(function (result) {
-                    dirtyModelCache.markClean(domainObject);
-                    return result;
-                });
+                return this.persistenceCapability.persist();
             }
         };
 
         TransactionalPersistenceCapability.prototype.refresh = function () {
-            var domainObject = this.domainObject,
-                dirtyModelCache = this.dirtyModelCache;
-
-            return this.persistenceCapability.refresh().then(function (result) {
-                dirtyModelCache.markClean(domainObject);
-                return result;
-            });
+            return this.persistenceCapability.refresh();
         };
 
         TransactionalPersistenceCapability.prototype.getSpace = function () {

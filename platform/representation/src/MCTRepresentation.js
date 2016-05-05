@@ -55,9 +55,7 @@ define(
          * @param {ViewDefinition[]} views an array of view extensions
          */
         function MCTRepresentation(representations, views, representers, $q, templateLinker, $log) {
-            var representationMap = {},
-                gestureMap = {},
-                listeners = 0;
+            var representationMap = {};
 
             // Assemble all representations and views
             // The distinction between views and representations is

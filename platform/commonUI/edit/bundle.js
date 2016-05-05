@@ -44,7 +44,6 @@ define([
     "./src/capabilities/EditorCapability",
     "./src/capabilities/TransactionCapabilityDecorator",
     "./src/services/TransactionService",
-    "./src/services/DirtyModelCache",
     "text!./res/templates/library.html",
     "text!./res/templates/edit-object.html",
     "text!./res/templates/edit-action-buttons.html",
@@ -74,7 +73,6 @@ define([
     EditorCapability,
     TransactionCapabilityDecorator,
     TransactionService,
-    DirtyModelCache,
     libraryTemplate,
     editObjectTemplate,
     editActionButtonsTemplate,
@@ -275,8 +273,7 @@ define([
                     "implementation": TransactionCapabilityDecorator,
                     "depends": [
                         "$q",
-                        "transactionService",
-                        "dirtyModelCache"
+                        "transactionService"
                     ]
                 },
                 {
@@ -285,15 +282,7 @@ define([
                     "implementation": TransactionService,
                     "depends": [
                         "$q",
-                        "dirtyModelCache"
-                    ]
-                },
-                {
-                    "type": "provider",
-                    "provides": "dirtyModelCache",
-                    "implementation": DirtyModelCache,
-                    "depends": [
-                        "topic"
+                        "$log"
                     ]
                 }
             ],
@@ -326,8 +315,7 @@ define([
                     "description": "Provides transactional editing capabilities",
                     "implementation": EditorCapability,
                     "depends": [
-                        "transactionService",
-                        "dirtyModelCache"
+                        "transactionService"
                     ]
                 }
             ],

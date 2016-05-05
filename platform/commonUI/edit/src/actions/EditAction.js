@@ -91,8 +91,11 @@ define(
             var domainObject = (context || {}).domainObject,
                 type = domainObject && domainObject.getCapability('type');
 
-            // Only allow creatable types to be edited
-            return type && type.hasFeature('creation') && !domainObject.getCapability('status').get('editing');
+            // Only allow editing of types that support it and are not already
+            // being edited
+            return type && type.hasFeature('creation') &&
+                domainObject.hasCapability('editor') &&
+                !domainObject.getCapability('editor').inEditContext();
         };
 
         return EditAction;

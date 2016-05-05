@@ -76,11 +76,6 @@ define(
             return this.dirtyModelCache.isDirty(this.domainObject);
         };
 
-        EditorCapability.prototype.appliesTo = function(context) {
-            var domainObject = context.domainObject;
-            return domainObject && domainObject.getType().hasFeature("creation");
-        }
-
         return EditorCapability;
     }
 );

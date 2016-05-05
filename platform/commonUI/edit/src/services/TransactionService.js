@@ -46,11 +46,7 @@ define(
         };
 
         TransactionService.prototype.isActive = function () {
-            return this.transaction;
-        };
-
-        TransactionService.prototype.isCommitting = function () {
-            return this.committing;
+            return this.transaction && !this.committing;
         };
 
         /**
@@ -79,9 +75,9 @@ define(
                     .map(objectToPromise))
                 .then(function () {
                     self.transaction = false;
-                    this.committing = false;
+                    self.committing = false;
                 }).catch(function() {
-                    return this.committing = false;
+                    return self.committing = false;
                 });
         };
 
@@ -110,7 +106,7 @@ define(
                 .map(objectToPromise))
                 .then(function () {
                     self.transaction = false;
-                    this.committing = false;
+                    self.committing = false;
                 });
         };
 

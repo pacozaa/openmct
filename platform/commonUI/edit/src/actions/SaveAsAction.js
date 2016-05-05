@@ -138,8 +138,8 @@ define(
                 return copyService.perform(domainObject, parent, allowClone);
             }
 
-            function cancelEditingAfterClone(clonedObject) {
-                return domainObject.getCapability("editor").cancel()
+            function commitEditingAfterClone(clonedObject) {
+                return domainObject.getCapability("editor").save()
                     .then(resolveWith(clonedObject));
             }
 
@@ -147,7 +147,7 @@ define(
                 .then(doWizardSave)
                 .then(getParent)
                 .then(cloneIntoParent)
-                .then(cancelEditingAfterClone)
+                .then(commitEditingAfterClone)
                 .catch(resolveWith(false));
         };
 
@@ -160,7 +160,8 @@ define(
         SaveAsAction.appliesTo = function (context) {
             var domainObject = (context || {}).domainObject;
             return domainObject !== undefined &&
-                domainObject.getCapability("status").get("editing") &&
+                domainObject.hasCapability('editor') &&
+                domainObject.getCapability('editor').inEditContext() &&
                 domainObject.getModel().persisted === undefined;
         };
 

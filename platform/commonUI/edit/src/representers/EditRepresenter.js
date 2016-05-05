@@ -138,7 +138,7 @@ define(
                 }
             });
 
-            if (representedObject.getCapability('status').get('editing')){
+            if (representedObject.hasCapability('editor') && representedObject.getCapability('editor').inEditContext()){
                 setEditing();
             }
         };
